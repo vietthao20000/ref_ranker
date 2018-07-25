@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "async": "^2.6.0",
+    "body-parser": "^1.18.2",
+    "dotenv": "^5.0.1",
+    "express": "^4.16.3",
+    "fb": "^2.0.0",
+    "mongoose": "^5.0.11",
+    "nodemailer": "^4.6.7",
+    "url": "^0.11.0"
+  }
+}

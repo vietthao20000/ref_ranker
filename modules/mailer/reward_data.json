@@ -1,0 +1,26 @@
+{
+  "1": {
+    "reward": "Lời cảm ơn",
+    "next": 2
+  },
+  "2": {
+    "reward": "50.000 VNĐ",
+    "next": 4
+  },
+  "4": {
+    "reward": "60.000 VNĐ",
+    "next": 6
+  },
+  "6": {
+    "reward": "80.000 VNĐ",
+    "next": 10
+  },
+  "10": {
+    "reward": "150.000 VNĐ + áo",
+    "next": 11
+  },
+  "special": {
+    "reward": "Phần quà đặc biệt",
+    "next": "trên 10"
+  }
+}

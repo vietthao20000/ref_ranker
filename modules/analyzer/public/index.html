@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+    <link rel="stylesheet" type="text/css" href="./css/daterangepicker.css" />
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <title>Referral analyzer</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+      <a class="navbar-brand" href="#">Referral analyzer</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </nav>
+
+    <div class="container-fluid" id="binding">
+      <div class="row">
+        <div class="col-md-4 offset-md-8">
+          <div class="form-group row" id="date-input">
+            <label class="col-md-5 col-form-label">Filter by date range:</label>
+            <div id="reportrange" class="pull-right col-md-6 form-control text-center" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+              <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+              <span></span> <b class="caret"></b>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="analyzer-table">
+        <table class="table table-responsive table-hover">
+          <thead>
+            <tr>
+              <th scope="col" width="100">#</th>
+              <th scope="col" width="200">Last</th>
+              <th scope="col" width="200">First</th>
+              <th scope="col" width="200">Facebook link</th>
+              <th scope="col" width="200">Email</th>
+              <th scope="col" width="200">Phone number</th>
+              <th scope="col" width="200">Invites count</th>
+              <th scope="col" width="100"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tbody v-for="person, index in data">
+              <tr>
+                <th scope="row" width="100">{{index+1}}</th>
+                <td width="200">{{person.name.last}}</td>
+                <td width="200">{{person.name.first}}</td>
+                <td width="200">
+                  <a :href=`https://fb.com/${person.uid}` target="_blank">
+                    https://fb.com/{{person.uid}}
+                  </a>
+                </td>
+                <td width="200">{{person.mail}}</td>
+                <td width="200">{{person.phone}}</td>
+                <td width="200">{{person.count}}</td>
+                <td width="100"><button type="button" class="btn btn-primary btn-sm" @click="btnClick(index)" :class=`expand-btn-${index}`>Expand</button></td>
+              </tr>
+
+              <tr v-for="person in person.full" :class=`invited-${index}` style="display: none;" class="table-success">
+                <th></th>
+                <td width="200">{{person.name.last}}</td>
+                <td width="200">{{person.name.first}}</td>
+                <td width="200">
+                  <a :href=`https://fb.com/${person.uid}` target="_blank">
+                    https://fb.com/{{person.uid}}
+                  </a>
+                </td>
+                <td width="200">{{person.mail}}</td>
+                <td width="200">{{person.phone}}</td>
+                <td width="100"></td>
+                <td width="100"></td>
+              </tr>
+            </tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
+    <script src="./js/moment.min.js"></script>
+    <script src="./js/daterangepicker.js"></script>
+    <script src="./js/main.js"></script>
+  </body>
+</html>
