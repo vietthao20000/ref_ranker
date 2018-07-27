@@ -55,14 +55,4 @@ get_reward_info = (count) => {
     }
 }
 
-// count = 4
-// reward = get_reward_info(count)
-// name = 'Việt Thảo'
-// send_email(
-//   'thao.viet.204390@gmail.com', 
-//   'vietthao2000@gmail.com', 
-//   'Test', 
-//   fs.readFileSync('./template.html', 'utf-8').replace('{{name}}', name).replace('{{reward}}', reward.reward).replace('{{count}}', count)
-// )
-
 module.exports = { get_reward_info, send_email }

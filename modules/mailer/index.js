@@ -27,8 +27,7 @@ Router.post('/webhook', (req, res) => {
       next_reward = mailerController.get_reward_info(current_reward.next).reward
 
       mailerController.send_email({ 
-        // to: invitor.mail, 
-        to: 'vietthao2000@gmail.com',
+        to: invitor.mail, 
         subject: 'Cảm ơn bạn', 
         html_content: generateEmail({
           name: data.kid.name,
