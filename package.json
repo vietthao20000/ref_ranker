@@ -2,6 +2,7 @@
   "dependencies": {
     "async": "^2.6.0",
     "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
     "fb": "^2.0.0",

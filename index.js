@@ -9,6 +9,7 @@ const model = require(__dirname + '/modules/analyzer/model')
 const bodyParser = require('body-parser')
 const utils = require(__dirname + '/modules/utils/')
 const mailerRouter = require(__dirname + '/modules/mailer')
+const cors = require('cors')
 
 mongoose.connect(process.env.dburi)
 	.then(() => {
@@ -24,6 +25,7 @@ mongoose.connect(process.env.dburi)
 		console.log(err)
 	})
 
+app.use(cors())
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 
