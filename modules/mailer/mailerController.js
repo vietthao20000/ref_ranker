@@ -40,7 +40,11 @@ send_email = ({ to, subject, html_content }) => {
 
 get_reward_info = (count) => {
   reward_data = JSON.parse(fs.readFileSync(__dirname + '/reward_data.json', 'utf-8'))
-  if (count >= 10) return reward_data['special'];
+  if (count >= 10) {
+    reward = reward_data['special'];
+    reward.next = count + 1;
+    return reward;
+  }
   reward = reward_data[count.toString()]
 
   if (reward)
