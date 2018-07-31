@@ -19,26 +19,30 @@ Router.post('/webhook', (req, res) => {
   data = req.body
   fb_url = data.kid.inviteBy
   username = utils.parseFbProfile(fb_url)
-  utils.parseFbUsername([username], process.env.token).then(resp => controller.getAnalyzedForSpecificUser(resp[username].id).then(resp => {
-    if (resp && resp.length) {
-      invitor = resp[0]
+    controller.update()
+    .then(() => utils.parseFbUsername([username], process.env.token))
+    .then(resp => controller.getAnalyzedForSpecificUser(resp[username].id)
+    .then(resp => {
+      if (resp && resp.length) {
+        invitor = resp[0]
 
-      current_reward = mailerController.get_reward_info(invitor.count)
-      next_reward = mailerController.get_reward_info(current_reward.next).reward
+        current_reward = mailerController.get_reward_info(invitor.count)
+        next_reward = mailerController.get_reward_info(current_reward.next).reward
 
-      mailerController.send_email({ 
-        to: invitor.mail, 
-        subject: 'Cảm ơn bạn', 
-        html_content: generateEmail({
-          name: data.kid.name,
-          count: invitor.count,
-          reward: current_reward.reward,
-          next_reward,
-          next_count: current_reward.next
-        }) 
-      })
+        mailerController.send_email({ 
+          to: invitor.mail, 
+          subject: 'Cảm ơn bạn', 
+          html_content: generateEmail({
+            name: data.kid.name,
+            count: invitor.count,
+            reward: current_reward.reward,
+            next_reward,
+            next_count: current_reward.next
+          }) 
+        })
+      }
     }
-  }))
+  ))
 
   res.json(true)
 })

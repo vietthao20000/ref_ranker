@@ -2,128 +2,129 @@ const model = require(__dirname + '/model')
 const utils = require(__dirname + '/../utils')
 const async = require('async')
 
-update = () => {
-  getUnparsed('facebook', 'uid')
-  .then(data => {
-    let filtered = []
-    data.map(a => {
-      if (filtered.indexOf(a)===-1) {
-        filtered.push(a)
-      }
-    })
-
-    return filtered.map(a => {
-      a.uid = utils.parseFbProfile(a.facebook)
-      return a
-    })
-  })
-  .then(data => {
-    let steps = []
-    let full = {}
-    let limit = 50
-
-    for (let i = 0; i <= data.length; i+=limit) {
-      steps.push(i)
-    }
-
-    let temp_data = data.map(a => a.uid).filter(a => a)
-
-    async.eachLimit(steps, 10, (i, cb) => {
-      utils.parseFbUsername(temp_data.slice(i, i+limit-1), process.env.token)
-        .then(resp => {
-          Object.assign(full, resp)
-          cb()
-        })
-        .catch(cb)
-    }, err => {
-      if (err) {
-        console.log(err)
-      }
-
-      try {
-        data.map(a => {
-          if (a.uid !== 'false') {
-            if (full[a.uid]) {
-              a.uid = full[a.uid].id
-            } else {
-              a.uid = 'false'
-            }
-          }
-
-          model.update({_id: a._id}, a).exec()
-        })
-
-        console.log(`Updating ${data.length} uids`)
-      } catch (e) {
-        console.log(e)
-      }
-    })
-  })
-  .catch(err => console.log(err.message))
-
-  getUnparsed('inviteBy', 'inviteByUid')
-  .then(data => {
-    let filtered = []
-    data.map(a => {
-      if (filtered.indexOf(a)===-1) {
-        filtered.push(a)
-      }
-    })
-
-    return filtered.map(a => {
-      a.uid = utils.parseFbProfile(a.facebook)
-      return a
-    })
-  })
-  .then(data => {
-    let steps = []
-    let full = {}
-    let limit = 50
-
-    for (let i = 0; i <= data.length; i+=limit) {
-      steps.push(i)
-    }
-
-    let temp_data = data.map(a => a.inviteByUid).filter(a => a)
-
-    async.eachLimit(steps, 10, (i, cb) => {
-      utils.parseFbUsername(temp_data.slice(i, i+limit-1), process.env.token)
-        .then(resp => {
-          Object.assign(full, resp)
-          cb()
-        })
-        .catch(cb)
-    }, err => {
-      if (err) {
-        console.log(err)
-      }
-
-      try {
-        data.map(a => {
-          if (a.inviteByUid !== 'false') {
-            if (full[a.inviteByUid]) {
-              a.inviteByUid = full[a.inviteByUid].id
-            } else {
-              a.inviteByUid = 'false'
-            }
-          }
-
-          model.update({_id: a._id}, a).exec()
-        })
-
-        console.log(`Updating ${data.length} invitor uids`)
-      } catch (e) {
-        console.log(e)
-      }
-    })
-  })
-  .catch(err => console.log(err.message))
-}
-
 getUnparsed = (sourceField, resultField) => {
   return model.aggregate([
     {$match: {[resultField]: null}},
     {$project: {[sourceField]: 1}}
+  ])
+}
+
+update = () => {
+  return Promise.all([
+    getUnparsed('facebook', 'uid')
+    .then(data => {
+      let filtered = []
+      data.map(a => {
+        if (filtered.indexOf(a)===-1) {
+          filtered.push(a)
+        }
+      })
+
+      return filtered.map(a => {
+        a.uid = utils.parseFbProfile(a.facebook)
+        return a
+      })
+    })
+    .then(data => {
+      let steps = []
+      let full = {}
+      let limit = 50
+
+      for (let i = 0; i <= data.length; i+=limit) {
+        steps.push(i)
+      }
+
+      let temp_data = data.map(a => a.uid).filter(a => a)
+
+      async.eachLimit(steps, 10, (i, cb) => {
+        utils.parseFbUsername(temp_data.slice(i, i+limit-1), process.env.token)
+          .then(resp => {
+            Object.assign(full, resp)
+            cb()
+          })
+          .catch(cb)
+      }, err => {
+        if (err) {
+          console.log(err)
+        }
+
+        try {
+          data.map(a => {
+            if (a.uid !== 'false') {
+              if (full[a.uid]) {
+                a.uid = full[a.uid].id
+              } else {
+                a.uid = 'false'
+              }
+            }
+
+            model.update({_id: a._id}, a).exec()
+          })
+
+          console.log(`Updating ${data.length} uids`)
+        } catch (e) {
+          console.log(e)
+        }
+      })
+    })
+    .catch(err => console.log(err.message)),
+    getUnparsed('inviteBy', 'inviteByUid')
+    .then(data => {
+      let filtered = []
+      data.map(a => {
+        if (filtered.indexOf(a)===-1) {
+          filtered.push(a)
+        }
+      })
+
+      return filtered.map(a => {
+        a.uid = utils.parseFbProfile(a.facebook)
+        return a
+      })
+    })
+    .then(data => {
+      let steps = []
+      let full = {}
+      let limit = 50
+
+      for (let i = 0; i <= data.length; i+=limit) {
+        steps.push(i)
+      }
+
+      let temp_data = data.map(a => a.inviteByUid).filter(a => a)
+
+      async.eachLimit(steps, 10, (i, cb) => {
+        utils.parseFbUsername(temp_data.slice(i, i+limit-1), process.env.token)
+          .then(resp => {
+            Object.assign(full, resp)
+            cb()
+          })
+          .catch(cb)
+      }, err => {
+        if (err) {
+          console.log(err)
+        }
+
+        try {
+          data.map(a => {
+            if (a.inviteByUid !== 'false') {
+              if (full[a.inviteByUid]) {
+                a.inviteByUid = full[a.inviteByUid].id
+              } else {
+                a.inviteByUid = 'false'
+              }
+            }
+
+            model.update({_id: a._id}, a).exec()
+          })
+
+          console.log(`Updating ${data.length} invitor uids`)
+        } catch (e) {
+          console.log(e)
+        }
+      })
+    })
+    .catch(err => console.log(err.message))
   ])
 }
 
