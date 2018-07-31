@@ -33,7 +33,7 @@ Router.post('/webhook', (req, res) => {
           to: invitor.mail, 
           subject: 'Cảm ơn bạn', 
           html_content: generateEmail({
-            name: data.kid.name,
+            name: data.kid.name.first_name+" "+data.kid.name.last_name,
             count: invitor.count,
             reward: current_reward.reward,
             next_reward,
