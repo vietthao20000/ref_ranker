@@ -166,13 +166,40 @@ getAnalyzed = (start_time, end_time) => {
         }
       }
     }, {
+      $project: {
+        name: 1,
+        facebook: 1,
+        phone: 1,
+        uid: 1,
+        mail: 1,
+        inviteByUid: 1,
+        same: { $cmp: ['$inviteByUid', '$uid'] }
+      }
+    },
+    {
+      $match: {
+        same: { $ne: 0 }
+      }
+    },
+    {
       $lookup: {
         from: "kids",
         localField: "inviteByUid",
         foreignField: "uid",
         as: "invitor"
       }
-    }, {
+    },
+    {
+      $project: {
+        invitor: { $slice: ['$invitor', 1] },
+        name: 1,
+        facebook: 1,
+        phone: 1,
+        uid: 1,
+        mail: 1,
+      }
+    },
+    {
       $unwind: "$invitor"
     }, {
       $group: {
