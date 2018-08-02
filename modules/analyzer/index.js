@@ -16,4 +16,8 @@ Router.get('/getAnalyzed', (req, res) => {
 		.then(doc => res.json(doc))
 })
 
+Router.get('/update', (req, res) => {
+  analyzerController.update().then(() => { res.send("done") })
+})
+
 module.exports = Router

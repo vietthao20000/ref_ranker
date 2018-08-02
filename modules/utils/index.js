@@ -62,7 +62,6 @@ parseFbUsername = (ids, access_token) => {
 	return FB.api('', {ids: ids.join(','), access_token, fields: 'id'})
 	.catch(err => {
 		if (err.response.error.code === 803) {
-      console.log(err)
 			let failed = err.response.error.message.split(': ')[1].trim().split(',')
 			let filtered = ids.filter(a => failed.indexOf(a)===-1)
 			return parseFbUsername(filtered, access_token)

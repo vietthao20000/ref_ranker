@@ -1,6 +1,7 @@
 const model = require(__dirname + '/model')
 const utils = require(__dirname + '/../utils')
 const async = require('async')
+const _ = require('lodash')
 
 getUnparsed = (sourceField, resultField) => {
   return model.aggregate([
@@ -9,122 +10,70 @@ getUnparsed = (sourceField, resultField) => {
   ])
 }
 
+updateField = (sourceField, resultField) => {
+  // Lấy những user chưa được parse FB link thành uid
+  return getUnparsed(sourceField, resultField)
+  .then(data => {
+    // Lọc trùng
+    let filtered = _.uniq(data)
+
+    // Parse link FB thành username
+    return filtered.map(user => {
+      user[resultField] = utils.parseFbProfile(user[sourceField])
+      return user
+    })
+  })
+  .then(data => {
+    let steps = []
+    let full = {}
+    let limit = 50
+
+    for (let i = 0; i <= data.length; i+=limit) {
+      steps.push(i)
+    }
+
+    let uids = data.map(user => user[resultField]).filter(uid => uid)
+
+    // Chia ra thành các chunks 50 element để request cho nhanh và khỏi bị limit
+    let chunks = _.chunk(uids, 50)
+
+    // Request 10 chunks một lúc
+    return new Promise((resolve, reject) => {
+      async.eachLimit(
+        chunks, 10, 
+        (chunk, cb) => {
+          // Parse username thành uid
+          utils.parseFbUsername(chunk, process.env.token)
+            .then(resp => {
+              full = {...full, ...resp}
+              cb()
+            })
+            .catch(cb)
+        }, (err) => {
+          if (err) {
+            console.log(err.message)
+          }
+
+          console.log(`Updating ${data.length} ${resultField}`)
+
+          return async.each(data, (user, cb) => {
+            let update_data = {[resultField]: full[user[resultField]] ? full[user[resultField]].id : 'false'}
+            model.update({_id: user._id}, {$set: update_data}).exec(cb)
+          }, (err, data) => {
+            if (err) reject(err)
+            resolve(data) 
+          })
+        }
+      )
+    })
+  })
+  .catch(err => console.log(err.message))
+}
+
 update = () => {
   return Promise.all([
-    getUnparsed('facebook', 'uid')
-    .then(data => {
-      let filtered = []
-      data.map(a => {
-        if (filtered.indexOf(a)===-1) {
-          filtered.push(a)
-        }
-      })
-
-      return filtered.map(a => {
-        a.uid = utils.parseFbProfile(a.facebook)
-        return a
-      })
-    })
-    .then(data => {
-      let steps = []
-      let full = {}
-      let limit = 50
-
-      for (let i = 0; i <= data.length; i+=limit) {
-        steps.push(i)
-      }
-
-      let temp_data = data.map(a => a.uid).filter(a => a)
-
-      async.eachLimit(steps, 10, (i, cb) => {
-        utils.parseFbUsername(temp_data.slice(i, i+limit-1), process.env.token)
-          .then(resp => {
-            Object.assign(full, resp)
-            cb()
-          })
-          .catch(cb)
-      }, err => {
-        if (err) {
-          console.log(err)
-        }
-
-        try {
-          data.map(a => {
-            if (a.uid !== 'false') {
-              if (full[a.uid]) {
-                a.uid = full[a.uid].id
-              } else {
-                a.uid = 'false'
-              }
-            }
-
-            model.update({_id: a._id}, a).exec()
-          })
-
-          console.log(`Updating ${data.length} uids`)
-        } catch (e) {
-          console.log(e)
-        }
-      })
-    })
-    .catch(err => console.log(err.message)),
-    getUnparsed('inviteBy', 'inviteByUid')
-    .then(data => {
-      let filtered = []
-      data.map(a => {
-        if (filtered.indexOf(a)===-1) {
-          filtered.push(a)
-        }
-      })
-
-      return filtered.map(a => {
-        a.inviteByUid = utils.parseFbProfile(a.inviteBy)
-        return a
-      })
-    })
-    .then(data => {
-      let steps = []
-      let full = {}
-      let limit = 50
-
-      for (let i = 0; i <= data.length; i+=limit) {
-        steps.push(i)
-      }
-
-      let temp_data = data.map(a => a.inviteByUid).filter(a => a)
-
-      async.eachLimit(steps, 10, (i, cb) => {
-        utils.parseFbUsername(temp_data.slice(i, i+limit-1), process.env.token)
-          .then(resp => {
-            Object.assign(full, resp)
-            cb()
-          })
-          .catch(cb)
-      }, err => {
-        if (err) {
-          console.log(err)
-        }
-
-        try {
-          data.map(a => {
-            if (a.inviteByUid !== 'false') {
-              if (full[a.inviteByUid]) {
-                a.inviteByUid = full[a.inviteByUid].id
-              } else {
-                a.inviteByUid = 'false'
-              }
-            }
-
-            model.update({_id: a._id}, a).exec()
-          })
-
-          console.log(`Updating ${data.length} invitor uids`)
-        } catch (e) {
-          console.log(e)
-        }
-      })
-    })
-    .catch(err => console.log(err.message))
+    updateField('facebook', 'uid'),
+    updateField('inviteBy', 'inviteByUid')
   ])
 }
 
