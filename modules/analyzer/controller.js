@@ -96,6 +96,9 @@ getAnalyzed = (start_time, end_time) => {
       }
     }, 
     {
+      $unwind: '$registrations'
+    },
+    {
       $match: {'registrations.details.admissionState.state': {$ne: 'km-menu-filterbar-admissionStatus-notyet'}}
     },
     {
@@ -129,7 +132,8 @@ getAnalyzed = (start_time, end_time) => {
         uid: 1,
         mail: 1,
         inviteByUid: 1,
-        same: { $cmp: ['$inviteByUid', '$uid'] }
+        same: { $cmp: ['$inviteByUid', '$uid'] },
+        // registrations: 1
       }
     },
     {
@@ -153,6 +157,7 @@ getAnalyzed = (start_time, end_time) => {
         phone: 1,
         uid: 1,
         mail: 1,
+        // registrations: 1
       }
     },
     {
