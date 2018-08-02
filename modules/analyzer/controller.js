@@ -94,7 +94,11 @@ getAnalyzed = (start_time, end_time) => {
         foreignField: "_id",
         as: "registrations"
       }
-    }, {
+    }, 
+    {
+      $match: {'registrations.details.admissionState.state': {$ne: 'km-menu-filterbar-admissionStatus-notyet'}}
+    },
+    {
       $match: {
         $and: [{
           'registrations.time': {
@@ -106,7 +110,8 @@ getAnalyzed = (start_time, end_time) => {
           }
         }]
       }
-    }, {
+    }, 
+    {
       $match: {
         "inviteByUid": {
           $nin: ['false', null]
@@ -115,7 +120,8 @@ getAnalyzed = (start_time, end_time) => {
           $nin: ['false', null]
         }
       }
-    }, {
+    },
+    {
       $project: {
         name: 1,
         facebook: 1,
@@ -164,7 +170,8 @@ getAnalyzed = (start_time, end_time) => {
           $first: "$invitor"
         }
       }
-    }, {
+    }, 
+    {
       $project: {
         name: '$invitorInfo.name',
         facebook: '$invitorInfo.facebook',
@@ -182,7 +189,8 @@ getAnalyzed = (start_time, end_time) => {
           // registrations: 1
         }
       }
-    }, {
+    }, 
+    {
       $sort: {
         count: -1
       }
