@@ -78,7 +78,7 @@ update = () => {
       })
 
       return filtered.map(a => {
-        a.inviteByUid = utils.parseFbProfile(a.facebook)
+        a.inviteByUid = utils.parseFbProfile(a.inviteBy)
         return a
       })
     })
