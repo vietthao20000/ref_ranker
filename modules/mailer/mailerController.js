@@ -40,23 +40,16 @@ send_email = ({ to, subject, html_content }) => {
 
 get_reward_info = (count) => {
   reward_data = JSON.parse(fs.readFileSync(__dirname + '/reward_data.json', 'utf-8'))
-  if (count >= 10) {
-    reward = reward_data['special'];
-    reward.next = count + 1;
+  if (count > 10) {
+    reward = reward_data[11];
+    reward.next = parseInt(count + 1);
     return reward;
   }
-  reward = reward_data[count.toString()]
+  reward = reward_data[count]
 
   if (reward)
     return reward;
-  next = count
-
-  for (i=count; i<=10; i++)
-    if (reward_data[++i])
-    return {
-      "reward": "Lời cảm ơn",
-      "next": i
-    }
+  return reward[reward.next]
 }
 
 module.exports = { get_reward_info, send_email }

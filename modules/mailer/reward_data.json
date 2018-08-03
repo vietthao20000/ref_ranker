@@ -1,26 +1,49 @@
-{
-  "1": {
-    "reward": "Lời cảm ơn",
-    "next": 2
+[
+  {
+    "next": 2,
+    "reward": null
   },
-  "2": {
-    "reward": "50.000 VNĐ",
-    "next": 4
+  {
+    "next": 2,
+    "reward": null
   },
-  "4": {
-    "reward": "60.000 VNĐ",
-    "next": 6
+  {
+    "next": 4,
+    "reward": "50.000 đồng" 
   },
-  "6": {
-    "reward": "80.000 VNĐ",
-    "next": 10
+  {
+    "next": 4,
+    "reward": null
   },
-  "10": {
-    "reward": "150.000 VNĐ + áo",
-    "next": 11
+  {
+    "next": 6,
+    "reward": "60.000 đồng" 
   },
-  "special": {
-    "reward": "Phần quà đặc biệt",
-    "next": 11
+  {
+    "next": 6,
+    "reward": null
+  },
+  {
+    "next": 10,
+    "reward": "80.000 đồng"
+  },
+  {
+    "next": 10,
+    "reward": null
+  },
+  {
+    "next": 10,
+    "reward": null
+  },
+  {
+    "next": 10,
+    "reward": null
+  },
+  {
+    "next": 11,
+    "reward": "150.000 đồng"
+  },
+  {
+    "reward": "đặc biệt"
   }
-}
+]

@@ -4,8 +4,8 @@ const utils = require(__dirname + '/../utils')
 const analyzerController = require(__dirname + '/../analyzer/controller')
 const fs = require('fs')
 
-generateEmail = ({ name, count, reward, next_reward, next_count }) => {
-  template = fs.readFileSync(__dirname + '/template.html', 'utf-8')
+generateEmail = ({ name, count, reward, next_reward, next_count, template_path }) => {
+  template = fs.readFileSync(template_path, 'utf-8')
   email = template
             .replace('{{name}}', name)
             .replace('{{count}}', count)
@@ -29,6 +29,9 @@ Router.post('/webhook', (req, res) => {
         current_reward = mailerController.get_reward_info(invitor.count)
         next_reward = mailerController.get_reward_info(current_reward.next).reward
 
+        template_name = current_reward.reward ? '/template2.html' : '/template1.html'
+        title = current_reward.reward ? 'BẠN CÓ QUÀ TỪ TECHKIDS !!' : 'Lời cảm ơn đến từ Techkids Coding School'
+
         mailerController.send_email({ 
           to: invitor.mail, 
           subject: 'Cảm ơn bạn', 
@@ -37,7 +40,8 @@ Router.post('/webhook', (req, res) => {
             count: invitor.count,
             reward: current_reward.reward,
             next_reward,
-            next_count: current_reward.next
+            next_count: current_reward.next,
+            template_path: __dirname + template_name
           }) 
         })
       }
@@ -46,6 +50,34 @@ Router.post('/webhook', (req, res) => {
 
 
   res.json(true)
+})
+
+Router.get('/template1', (req, res) => {
+  count = parseInt(req.query.count)
+  current_reward = mailerController.get_reward_info(count)
+  next_reward = mailerController.get_reward_info(current_reward.next).reward
+  res.send(generateEmail({
+    name: 'Thao',
+    count: count,
+    reward: current_reward.reward,
+    next_reward,
+    next_count: current_reward.next,
+    template_path: __dirname + '/template1.html'
+  }))
+})
+
+Router.get('/template2', (req, res) => {
+  count = parseInt(req.query.count)
+  current_reward = mailerController.get_reward_info(count)
+  next_reward = mailerController.get_reward_info(current_reward.next).reward
+  res.send(generateEmail({
+    name: 'Thao',
+    count: count,
+    reward: current_reward.reward,
+    next_reward,
+    next_count: current_reward.next,
+    template_path: __dirname + '/template2.html'
+  }))
 })
 
 module.exports = Router
