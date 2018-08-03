@@ -1,7 +1,7 @@
 const Router = require('express').Router()
 const mailerController = require(__dirname + '/mailerController')
 const utils = require(__dirname + '/../utils')
-const controller = require(__dirname + '/../analyzer/controller')
+const analyzerController = require(__dirname + '/../analyzer/controller')
 const fs = require('fs')
 
 generateEmail = ({ name, count, reward, next_reward, next_count }) => {
@@ -19,7 +19,7 @@ Router.post('/webhook', (req, res) => {
   data = req.body
   fb_url = data.kid.inviteBy
   username = utils.parseFbProfile(fb_url)
-    controller.update()
+    analyzerController.update()
     .then(() => utils.parseFbUsername([username], process.env.token))
     .then(resp => controller.getAnalyzedForSpecificUser(resp[username].id))
     .then(resp => {

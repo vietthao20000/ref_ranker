@@ -99,7 +99,7 @@ getAnalyzed = (start_time, end_time) => {
       $unwind: '$registrations'
     },
     {
-      $match: {'registrations.details.admissionState.state': {$ne: 'km-menu-filterbar-admissionStatus-notyet'}}
+      $match: {'registrations.studystatus.status': 'studying'}
     },
     {
       $match: {
