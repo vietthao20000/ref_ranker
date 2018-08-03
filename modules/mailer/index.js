@@ -21,7 +21,7 @@ Router.post('/webhook', (req, res) => {
   username = utils.parseFbProfile(fb_url)
     analyzerController.update()
     .then(() => utils.parseFbUsername([username], process.env.token))
-    .then(resp => controller.getAnalyzedForSpecificUser(resp[username].id))
+    .then(resp => analyzerController.getAnalyzedForSpecificUser(resp[username].id))
     .then(resp => {
       if (resp && resp.length) {
         invitor = resp[0]
