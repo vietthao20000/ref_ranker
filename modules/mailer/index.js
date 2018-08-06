@@ -34,7 +34,7 @@ Router.post('/webhook', (req, res) => {
 
         mailerController.send_email({ 
           to: invitor.mail, 
-          subject: 'Cảm ơn bạn', 
+          subject: title, 
           html_content: generateEmail({
             name: data.kid.name.first+" "+data.kid.name.last,
             count: invitor.count,
