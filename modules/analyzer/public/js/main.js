@@ -1,3 +1,53 @@
+var dummy_reward_data = [
+  {
+    "next": 2,
+    "reward": null
+  },
+  {
+    "next": 2,
+    "reward": null
+  },
+  {
+    "next": 4,
+    "reward": "50.000 đồng" 
+  },
+  {
+    "next": 4,
+    "reward": null
+  },
+  {
+    "next": 6,
+    "reward": "60.000 đồng" 
+  },
+  {
+    "next": 6,
+    "reward": null
+  },
+  {
+    "next": 10,
+    "reward": "80.000 đồng"
+  },
+  {
+    "next": 10,
+    "reward": null
+  },
+  {
+    "next": 10,
+    "reward": null
+  },
+  {
+    "next": 10,
+    "reward": null
+  },
+  {
+    "next": 11,
+    "reward": "150.000 đồng"
+  },
+  {
+    "reward": "đặc biệt"
+  }
+]
+
 new Vue({
 	el: '#binding',
 	data() {
@@ -16,8 +66,12 @@ new Vue({
 			}
 		},
 		fetchData(start_time, end_time) {
-			fetch(`./getAnalyzed?start_time=${start_time}&end_time=${end_time}`)
+			fetch(`http://techkids.vn:3000/getAnalyzed?start_time=${start_time}&end_time=${end_time}`)
 				.then(resp => resp.json())
+        .then(json => json.map(user => {
+          user.reward_data = dummy_reward_data;
+          return user;
+        }))
 				.then(json => this.data = json)
 				.catch(err => console.log(err))
 		}

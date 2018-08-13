@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+    <link rel="stylesheet" type="text/css" href="./css/daterangepicker.css" />
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <title>Referral analyzer</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+      <a class="navbar-brand" href="#">Referral analyzer</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </nav>
+
+    <div class="container-fluid" id="binding">
+      <div class="analyzer-table">
+        <table class="table table-bordered">
+          <thead>
+            <tr class="text-center">
+              <th scope="col" width="200">Timestamp</th>
+              <th scope="col" width="700">Config</th>
+              <th scope="col" width="300">Action</th>
+            </tr>
+          </thead>
+          <tbody class="text-center">
+            <tr v-for="config, config_index in data">
+              <td class="align-middle" width="200">{{config.timestamp}}</td>
+              <td class="config-row" width="700">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th class="reward-table-row">Goal</th>
+                      <td v-for="goal, index in config.config" v-if="goal.reward" class="reward-table-row">{{index}}</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th class="reward-table-row">Reward</th>
+                      <td v-for="goal, index in config.config" v-if="goal.reward" class="reward-table-row">
+                        <input type="number" v-model="goal.reward" class="form-control" step="5000" @change="changedConfig(`.config-${config_index}`);">
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+              <td class="align-middle" width="300">
+                <button type="button" class="btn btn-info" @click="addGoal(config.config); changedConfig(`.config-${config_index}`);">Add goal</button>
+                <button type="button" class="btn btn-warning" @click="duplicateConfig(config)" :disabled="config.duplicated">Duplicate</button>
+                <button type="button" :class=`config-${config_index}` class="btn btn-success" disabled @click="saveConfig(config)">Save</button>
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td class="align-middle">
+                <button type="button" class="btn btn-primary" @click="addConfig">New</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
+    <script src="./js/moment.min.js"></script>
+    <script src="./js/daterangepicker.js"></script>
+    <script src="./js/config.js"></script>
+  </body>
+</html>
