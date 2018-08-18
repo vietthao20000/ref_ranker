@@ -146,13 +146,14 @@ app = new Vue({
     }
   },
   methods: {
-    changedConfig(element) {
-      $(element).attr('disabled', false);
+    changedConfig(element, disabled) {
+      $(element).attr('disabled', disabled);
     },
     duplicateConfig(config) {
       var new_config = jQuery.extend(true, {}, config);
       new_config.timestamp = Date.now()
       new_config.duplicated = true
+      new_config.new = true
       this.data.push(new_config)
     },
     saveConfig(config) {
@@ -171,7 +172,8 @@ app = new Vue({
         config: [{
           next: 1,
           reward: default_amount
-        }]
+        }],
+        new: true
       }
 
       this.data.push(new_config);

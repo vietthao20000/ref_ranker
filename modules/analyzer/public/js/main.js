@@ -66,8 +66,9 @@ new Vue({
 			}
 		},
 		fetchData(start_time, end_time) {
-			fetch(`http://techkids.vn:3000/getAnalyzed?start_time=${start_time}&end_time=${end_time}`)
+			fetch(`/getAnalyzed?start_time=${start_time}&end_time=${end_time}`)
 				.then(resp => resp.json())
+        .then(json => json.data)
         .then(json => json.map(user => {
           user.reward_data = dummy_reward_data;
           return user;

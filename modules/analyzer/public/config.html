@@ -45,16 +45,16 @@
                     <tr>
                       <th class="reward-table-row">Reward</th>
                       <td v-for="goal, index in config.config" v-if="goal.reward" class="reward-table-row">
-                        <input type="number" v-model="goal.reward" class="form-control" step="5000" @change="changedConfig(`.config-${config_index}`);">
+                        <input type="number" v-model="goal.reward" class="form-control" step="5000" @change="changedConfig(`.config-${config_index}`, false);">
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </td>
               <td class="align-middle" width="300">
-                <button type="button" class="btn btn-info" @click="addGoal(config.config); changedConfig(`.config-${config_index}`);">Add goal</button>
+                <button type="button" class="btn btn-info" v-if="config.new" @click="addGoal(config.config); changedConfig(`.config-${config_index}`, false);">Add goal</button>
                 <button type="button" class="btn btn-warning" @click="duplicateConfig(config)" :disabled="config.duplicated">Duplicate</button>
-                <button type="button" :class=`config-${config_index}` class="btn btn-success" disabled @click="saveConfig(config)">Save</button>
+                <button type="button" :class=`config-${config_index}` class="btn btn-success" disabled @click="saveConfig(config); changedConfig(`.config-${config_index}`, true);">Save</button>
               </td>
             </tr>
             <tr>
