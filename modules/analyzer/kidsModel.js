@@ -49,4 +49,4 @@ let kidSchema = new mongoose.Schema({
   }
 })
 
-module.exports = mongoose.model('kids', kidSchema)
+module.exports = mongoose.model('Kids', kidSchema)
