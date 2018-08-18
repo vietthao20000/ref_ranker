@@ -22,7 +22,7 @@ Router.get('/getAnalyzed1', (req, res) => {
   end_time = new Date(end_time)
 
   analyzerController
-    .getAnalyzed1()
+    .getAnalyzed1(start_time, end_time)
     .then(doc => res.success({ data: doc }))
 })
 

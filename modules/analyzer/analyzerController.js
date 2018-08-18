@@ -207,7 +207,6 @@ getAnalyzed = (start_time, end_time) => {
 }
 
 findNextSuitableConfig = (prev_count, prev_reward) => {
-  console.log(prev_count, prev_reward)
   return rewardConfigModel.aggregate([
       {$unwind: '$config'},
       {$match: {'config.count': {$gt: prev_count}, 'config.reward': {$gt: prev_reward}}},
@@ -223,15 +222,38 @@ findNextSuitableConfig = (prev_count, prev_reward) => {
     })
 }
 
-getAnalyzed1 = () => {
+getAnalyzed1 = (start_time, end_time) => {
+  if (!start_time) {
+    start_time = new Date(0)
+  } else {
+    start_time = new Date(start_time)
+  }
+
+  if (!end_time) {
+    end_time = new Date()
+  } else {
+    end_time = new Date(end_time)
+  }
+
   return referralModel
-    .find({})
+    .find()
     .populate('kid')
-    .populate('referrals')
+    .populate({
+      path: 'referrals',
+      populate: {
+        path: 'registrations'
+      }
+    })
     .then(invitors => {
       let promises = [];
 
-      invitors.filter(invitor => {
+
+      invitors.map(invitor => {
+        invitor.referrals = invitor.referrals.filter(ref => {
+          let time = new Date(JSON.parse(JSON.stringify(ref.registrations[0])).time)
+          return (time >= start_time && time <= end_time)
+        })
+
         invitor.config.config.reverse();
         let refs = invitor.referrals.length;
         let max_count = invitor.config.config;
@@ -264,7 +286,7 @@ getAnalyzed1 = () => {
       })
 
       return Promise.all(promises)
-        .then(() => invitors)
+        .then(() => invitors.filter(invitor => (invitor.referrals.length > 0)))
         .catch(err => console.log(err))
     })
 }
