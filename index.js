@@ -3,9 +3,9 @@ const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
 const analyzerRouter = require(__dirname + '/modules/analyzer')
-const controller = require(__dirname + '/modules/analyzer/controller')
+const analyzerController = require(__dirname + '/modules/analyzer/analyzerController')
 const fs = require('fs')
-const model = require(__dirname + '/modules/analyzer/model')
+const kidsModel = require(__dirname + '/modules/analyzer/kidsModel')
 const bodyParser = require('body-parser')
 const utils = require(__dirname + '/modules/utils/')
 const mailerRouter = require(__dirname + '/modules/mailer')
@@ -28,6 +28,18 @@ mongoose.connect(process.env.dburi)
 app.use(cors())
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
+
+app.use((req, res, next) => {
+  res.success = ({ data, message }) => {
+    return res.json({ success: 1, data, message })
+  }
+
+  res.fail = ({ data, message }) => {
+    return res.json({ success: 0, data, message })
+  }
+
+  next()
+})
 
 app.use('/', analyzerRouter)
 
