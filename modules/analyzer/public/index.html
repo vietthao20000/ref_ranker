@@ -44,47 +44,85 @@
               <th scope="col" width="200">Email</th>
               <th scope="col" width="200">Phone number</th>
               <th scope="col" width="200" class="text-center">Invites count</th>
-              <th scope="col" width="200"></th>
-              <th scope="col" width="100"></th>
-              <th scope="col" width="100"></th>
+              <th scope="col" width="100">
+                <!-- Checked -->
+              </th>
+              <th scope="col" width="200">
+                <!-- Notes -->
+              </th>
+              <th scope="col" width="100">
+                <!-- Button -->
+              </th>
             </tr>
           </thead>
           <tbody>
             <tbody v-for="person, index in data">
               <tr>
                 <th scope="row" width="100">{{index+1}}</th>
-                <td width="200">{{person.name.last}}</td>
-                <td width="100">{{person.name.first}}</td>
+                <td width="200">{{person.kid.name.last}}</td>
+                <td width="100">{{person.kid.name.first}}</td>
                 <td width="200">
                   <a :href=`https://fb.com/${person.uid}` target="_blank">
-                    https://fb.com/{{person.uid}}
+                    https://fb.com/{{person.kid.uid}}
                   </a>
                 </td>
-                <td width="200">{{person.mail}}</td>
-                <td width="200">{{person.phone}}</td>
-                <td width="100"><!-- Amount --></td>
-                <td width="200" class="text-center">{{person.count}}</td>
+                <td width="200">{{person.kid.mail}}</td>
+                <td width="200">{{person.kid.phone}}</td>
+                <td width="200" class="text-center">{{person.referrals.length}}</td>
+                <td width="200">
+                  <!-- Amount -->
+                </td>
                 <td width="200"></td>
-                <td width="100"></td>
                 <td width="100"><button type="button" class="btn btn-primary btn-sm" @click="btnClick(index)" :class=`expand-btn-${index}`>Expand</button></td>
               </tr>
 
               <div>
                 <tr class="table" :class=`invited-${index}` style="display: none;">
                   <th width="100"></th>
-                  <td width="200">Last</td>
-                  <td width="100">First</td>
-                  <td width="200">Facebook link</td>
-                  <td width="200">Email</td>
-                  <td width="200">Phone number</td>
-                  <td width="100">Amount</td>
-                  <td width="200" class="text-center">Checked</td>
-                  <td width="200">Notes</td>
-                  <td width="100"></td>
+                  <td width="200">
+                    <small>
+                      Last
+                    </small>
+                  </td>
+                  <td width="100">
+                    <small>
+                      First
+                    </small>
+                  </td>
+                  <td width="200">
+                    <small>
+                      Facebook link
+                    </small>
+                  </td>
+                  <td width="200">
+                    <small>
+                      Email
+                    </small>
+                  </td>
+                  <td width="200">
+                    <small>
+                      Phone number
+                    </small>
+                  </td>
+                  <td width="200">
+                    <small>
+                      Amount
+                    </small>
+                  </td>
+                  <td width="100" class="text-center">
+                    <small>
+                      Checked
+                    </small>
+                  </td>
+                  <td width="200">
+                    <small>
+                    Notes
+                    </small>
+                  </td>
                   <td width="100"></td>
                 </tr>
 
-                <tr v-for="referred_person, index1 in person.full" class="table-success" :class=`invited-${index}` style="display: none;">
+                <tr v-for="referred_person, index1 in person.referrals" class="table-success" :class=`invited-${index}` style="display: none;">
                   <td width="100" class="text-right">{{index1+1}}</td>
                   <td width="200">{{referred_person.name.last}}</td>
                   <td width="100">{{referred_person.name.first}}</td>
@@ -95,12 +133,17 @@
                   </td>
                   <td width="200">{{referred_person.mail}}</td>
                   <td width="200">{{referred_person.phone}}</td>
-                  <td width="100">{{person.reward_data[index1+1].reward}}</td>
-                  <td width="200" class="text-center">
-                    <input type="checkbox" v-show="person.reward_data[index1+1].reward">
+                  <td width="200">
+                    <span v-if="referred_person.config">
+                      {{referred_person.config.reward === -1 ? "Need update" : referred_person.config.reward}}
+                    </span>
                   </td>
-                  <td width="200">This is a note</td>
-                  <td width="100"></td>
+                  <td width="100" class="text-center checkbox-row">
+                    <input type="checkbox" v-if="referred_person.config && referred_person.config.reward !== -1" @change="save(referred_person.config);" v-model="referred_person.config.paid">
+                  </td>
+                  <td width="200" class="text-center">
+                    <input type="text" class="form-control notes" placeholder="This is a note" v-model="referred_person.config.notes" v-if="referred_person.config && referred_person.config.amount !== -1" @click="create_debounce()" @keyup="debounce_save(referred_person.config)" @changed="debounce_save(referred_person.config)">
+                  </td>
                   <td width="100"></td>
                 </tr>
               </div>
@@ -118,6 +161,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
     <script src="./js/moment.min.js"></script>
     <script src="./js/daterangepicker.js"></script>
+    <script src="./js/lodash.js"></script>
     <script src="./js/main.js"></script>
   </body>
 </html>

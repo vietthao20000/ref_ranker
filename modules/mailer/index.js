@@ -33,7 +33,8 @@ Router.post('/webhook', (req, res) => {
     template_name = current_reward.reward ? '/template2.html' : '/template1.html'
     title = current_reward.reward ? 'BẠN CÓ QUÀ TỪ TECHKIDS !!' : 'Lời cảm ơn đến từ Techkids Coding School'
     mailerController.send_email({ 
-      to: invitor.mail,
+      to: invitor.mail, 
+      // to: 'vietthao2000@gmail.com',
       subject: title, 
       html_content: generateEmail({
         name: invited.kid.name.first+" "+invited.kid.name.last,

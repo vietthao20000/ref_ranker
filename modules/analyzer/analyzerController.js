@@ -1,7 +1,10 @@
 const kidsModel = require(__dirname + '/kidsModel')
+const registrationModel = require('./registrationsModel.js');
 const utils = require(__dirname + '/../utils')
 const async = require('async')
 const _ = require('lodash')
+const referralModel = require(__dirname + '/referralModel.js');
+const rewardConfigModel = require(__dirname + '/rewardConfigModel.js');
 
 getUnparsed = (sourceField, resultField) => {
   return kidsModel.aggregate([
@@ -203,6 +206,69 @@ getAnalyzed = (start_time, end_time) => {
   ])
 }
 
+findNextSuitableConfig = (prev_count, prev_reward) => {
+  console.log(prev_count, prev_reward)
+  return rewardConfigModel.aggregate([
+      {$unwind: '$config'},
+      {$match: {'config.count': {$gt: prev_count}, 'config.reward': {$gt: prev_reward}}},
+      {$sort: {created_time: -1}},
+      {$limit: 1}
+    ])
+    .then(resp => {
+      if (resp && resp.length) {
+        return resp[0].config;
+      } else {
+        return false;
+      }
+    })
+}
+
+getAnalyzed1 = () => {
+  return referralModel
+    .find({})
+    .populate('kid')
+    .populate('referrals')
+    .then(invitors => {
+      let promises = [];
+
+      invitors.filter(invitor => {
+        invitor.config.config.reverse();
+        let refs = invitor.referrals.length;
+        let max_count = invitor.config.config;
+        var need_update = false;
+        if (!max_count || !max_count.length) need_update = true;
+        else if (max_count[0].count < refs) need_update = true;
+
+        if (need_update) {
+          let prev_count = invitor.config.config[0].count;
+          let prev_reward = invitor.config.config[0].reward;
+          invitor.config.config.reverse();
+
+          promises.push(
+            findNextSuitableConfig(prev_count, prev_reward)
+            .then(config => {
+              if (config) {
+                invitor.config.config.push(config);
+                return invitor.save();
+              } else {
+                while (prev_count < refs) {
+                  invitor.config.config.push({
+                    count: ++prev_count,
+                    reward: -1
+                  })
+                }
+              }
+            })
+          );
+        }
+      })
+
+      return Promise.all(promises)
+        .then(() => invitors)
+        .catch(err => console.log(err))
+    })
+}
+
 getAnalyzedForSpecificUser = (uid) => {
   return getAnalyzed().then(a => a.filter(b => b.uid === uid))
 }
@@ -215,4 +281,4 @@ getUnsent = () => {
 
 // getUnsent().then(res => console.log(res))
 
-module.exports = { getUnparsed, update, getAnalyzed, getUnsent, getAnalyzedForSpecificUser }
+module.exports = { getUnparsed, update, getAnalyzed, getUnsent, getAnalyzedForSpecificUser, getAnalyzed1 }

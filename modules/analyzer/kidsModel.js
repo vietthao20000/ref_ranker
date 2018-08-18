@@ -27,7 +27,8 @@ let kidSchema = new mongoose.Schema({
 	},
 	registrations: [
 		{
-			type:	'ObjectId',
+			type:	'ObjectId', 
+      ref: 'registrations',
 		}
 	],
 	name: {
@@ -43,10 +44,7 @@ let kidSchema = new mongoose.Schema({
 	},
 	uid: {
 		type: 'String'
-	},
-  refEmailsSentCount: {
-    type: 'Number'
-  }
+	}
 })
 
 module.exports = mongoose.model('Kids', kidSchema)

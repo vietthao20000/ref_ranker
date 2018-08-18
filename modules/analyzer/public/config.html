@@ -32,7 +32,7 @@
           </thead>
           <tbody class="text-center">
             <tr v-for="config, config_index in data">
-              <td class="align-middle" width="200">{{config.created_time}}</td>
+              <td class="align-middle" width="200">{{moment(config.created_time).format('DD/MM/YY, hh:mm:ss A')}}</td>
               <td class="config-row" width="700">
                 <table class="table">
                   <thead>

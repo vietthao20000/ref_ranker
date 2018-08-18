@@ -25,3 +25,11 @@ html {
   width: 120px;
   max-width: 120px;
 }
+
+td, th {
+  vertical-align: middle !important;
+}
+
+.notes {
+  width: 200px;
+}

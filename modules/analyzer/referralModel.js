@@ -2,11 +2,18 @@ const mongoose = require('mongoose')
 
 let referralSchema = new mongoose.Schema({
   kid: { type: 'ObjectId', ref: 'Kids', required: true },
-  config: { type: 'ObjectId', ref: 'RewardConfigs', required: true },
+  config: {
+    created_time: 'Number',
+    config: [{
+      count: 'Number',
+      reward: 'Number',
+      paid: 'Boolean',
+      notes: 'String'
+    }]
+  },
   referrals: [{
     type: 'ObjectId', 
-    ref: 'Kids',
-    unique: true
+    ref: 'Kids'
   }]
 })
 

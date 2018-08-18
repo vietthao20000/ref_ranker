@@ -71,7 +71,7 @@ addNewRef = (user) => {
         } else {
           data = {
             kid: _id,
-            config: reward._id,
+            config: reward,
             referrals: [ user._id ]
           }
 

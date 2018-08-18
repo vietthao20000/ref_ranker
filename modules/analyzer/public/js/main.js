@@ -1,54 +1,31 @@
-var dummy_reward_data = [
+var dummy_reward_data = [ 
   {
-    "next": 2,
-    "reward": null
-  },
+    "count" : 1,
+    "reward" : 10000
+  }, 
   {
-    "next": 2,
-    "reward": null
-  },
+    "count" : 3,
+    "reward" : 30000
+  }, 
   {
-    "next": 4,
-    "reward": "50.000 đồng" 
-  },
+    "count" : 5,
+    "reward" : 50000
+  }, 
   {
-    "next": 4,
-    "reward": null
-  },
+    "count" : 6,
+    "reward" : 60000
+  }, 
   {
-    "next": 6,
-    "reward": "60.000 đồng" 
-  },
+    "count" : 7,
+    "reward" : 70000
+  }, 
   {
-    "next": 6,
-    "reward": null
-  },
-  {
-    "next": 10,
-    "reward": "80.000 đồng"
-  },
-  {
-    "next": 10,
-    "reward": null
-  },
-  {
-    "next": 10,
-    "reward": null
-  },
-  {
-    "next": 10,
-    "reward": null
-  },
-  {
-    "next": 11,
-    "reward": "150.000 đồng"
-  },
-  {
-    "reward": "đặc biệt"
+    "count" : 8,
+    "reward" : 80000
   }
 ]
 
-new Vue({
+app = new Vue({
 	el: '#binding',
 	data() {
 		return {
@@ -66,16 +43,35 @@ new Vue({
 			}
 		},
 		fetchData(start_time, end_time) {
-			fetch(`/getAnalyzed?start_time=${start_time}&end_time=${end_time}`)
+			fetch(`/getAnalyzed1?start_time=${start_time}&end_time=${end_time}`)
 				.then(resp => resp.json())
         .then(json => json.data)
         .then(json => json.map(user => {
-          user.reward_data = dummy_reward_data;
+          user.referrals.map((ref, index) => {
+            user.config.config.map(config => {
+              if (config.count === index+1) {
+                user.referrals[index].config = config
+              }
+            })
+          })
           return user;
         }))
 				.then(json => this.data = json)
 				.catch(err => console.log(err))
-		}
+		},
+    save(config) {
+      return fetch('/referrals', {
+        method: 'PATCH', 
+        body: JSON.stringify({data: config}),
+        headers: {'Content-Type': 'application/json'}
+      })
+    },
+    debounce_save(config) {
+      this.debounced(config)
+    },
+    create_debounce() {
+      this.debounced = _.debounce(this.save, 300)
+    }
 	},
 	mounted() {
 		let that = this
