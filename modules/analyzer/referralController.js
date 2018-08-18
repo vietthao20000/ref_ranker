@@ -51,7 +51,7 @@ addNewRef = (user) => {
         .limit(1)
         .then(reward => {
           if (!reward || !reward.length) {
-            reward = { created_time: Date.now(), reward_config: [] };
+            reward = { created_time: Date.now(), config: [] };
             return rewardConfigModel.create(reward)
           }
 

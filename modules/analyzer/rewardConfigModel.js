@@ -2,9 +2,10 @@ const mongoose = require('mongoose')
 
 let rewardSchema = new mongoose.Schema({
   created_time: 'Number',
-  reward_config: [{
+  config: [{
     count: 'Number',
-    reward: 'Number'
+    reward: 'Number',
+    _id: 0
   }]
 })
 

@@ -25,20 +25,22 @@
         <table class="table table-bordered">
           <thead>
             <tr class="text-center">
-              <th scope="col" width="200">Timestamp</th>
+              <th scope="col" width="200">Created time</th>
               <th scope="col" width="700">Config</th>
               <th scope="col" width="300">Action</th>
             </tr>
           </thead>
           <tbody class="text-center">
             <tr v-for="config, config_index in data">
-              <td class="align-middle" width="200">{{config.timestamp}}</td>
+              <td class="align-middle" width="200">{{config.created_time}}</td>
               <td class="config-row" width="700">
                 <table class="table">
                   <thead>
                     <tr>
                       <th class="reward-table-row">Goal</th>
-                      <td v-for="goal, index in config.config" v-if="goal.reward" class="reward-table-row">{{index}}</td>
+                      <td v-for="goal, index in config.config" v-if="goal.reward" class="reward-table-row">
+                        <input type="number" v-model="goal.count" class="form-control" step="1" @change="changedConfig(`.config-${config_index}`, false);">
+                      </td>
                     </tr>
                   </thead>
                   <tbody>
@@ -52,7 +54,7 @@
                 </table>
               </td>
               <td class="align-middle" width="300">
-                <button type="button" class="btn btn-info" v-if="config.new" @click="addGoal(config.config); changedConfig(`.config-${config_index}`, false);">Add goal</button>
+                <button type="button" class="btn btn-info" v-if="config.new || config_index == (data.length - 1)" @click="addGoal(config.config); changedConfig(`.config-${config_index}`, false);">Add goal</button>
                 <button type="button" class="btn btn-warning" @click="duplicateConfig(config)" :disabled="config.duplicated">Duplicate</button>
                 <button type="button" :class=`config-${config_index}` class="btn btn-success" disabled @click="saveConfig(config); changedConfig(`.config-${config_index}`, true);">Save</button>
               </td>
