@@ -1,23 +1,13 @@
 const express = require('express')
 const Router = express.Router()
-const analyzerController = require(__dirname + '/controller')
+const analyzerController = require(__dirname + '/analyzerController')
+const rewardConfigRouter = require('./rewardConfigRouter.js')
+const analyzerRouter = require('./analyzerRouter.js')
 
 Router.use('/', express.static(__dirname + '/public'))
 
-Router.get('/getAnalyzed', (req, res) => {
-	let start_time = parseInt(req.query.start_time) || 0
-	let end_time = parseInt(req.query.end_time) || Date.now()
+Router.use('/configs', rewardConfigRouter);
 
-	start_time = new Date(start_time)
-	end_time = new Date(end_time)
-
-	analyzerController
-		.getAnalyzed(start_time, end_time)
-		.then(doc => res.json(doc))
-})
-
-Router.get('/update', (req, res) => {
-  analyzerController.update().then(() => { res.send("done") })
-})
+Router.use(analyzerRouter)
 
 module.exports = Router

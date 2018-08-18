@@ -1,10 +1,10 @@
-const model = require(__dirname + '/model')
+const kidsModel = require(__dirname + '/kidsModel')
 const utils = require(__dirname + '/../utils')
 const async = require('async')
 const _ = require('lodash')
 
 getUnparsed = (sourceField, resultField) => {
-  return model.aggregate([
+  return kidsModel.aggregate([
     {$match: {[resultField]: null}},
     {$project: {[sourceField]: 1}}
   ])
@@ -58,7 +58,7 @@ updateField = (sourceField, resultField) => {
 
           return async.each(data, (user, cb) => {
             let update_data = {[resultField]: full[user[resultField]] ? full[user[resultField]].id : 'false'}
-            model.update({_id: user._id}, {$set: update_data}).exec(cb)
+            kidsModel.update({_id: user._id}, {$set: update_data}).exec(cb)
           }, (err, data) => {
             if (err) reject(err)
             resolve(data) 
@@ -86,7 +86,7 @@ getAnalyzed = (start_time, end_time) => {
     end_time = new Date()
   }
 
-  return model.aggregate([
+  return kidsModel.aggregate([
     {
       $lookup: {
         from: "registrations",
