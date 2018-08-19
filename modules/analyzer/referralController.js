@@ -72,7 +72,7 @@ addNewRef = (user) => {
       ])
       .then(([reward, invitor]) => {
         if (invitor) {
-          invitor.referrals.push(user._id);
+          invitor.referrals.push(user.kid._id);
           return invitor.save()
         } else {
           data = {
