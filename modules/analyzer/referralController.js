@@ -55,7 +55,7 @@ addNewRef = (user) => {
               created_time: Date.now(), 
               config: [{
                 count: 1,
-                reward: 0
+                reward: -1
               }] 
             };
             return rewardConfigModel.create(reward)
