@@ -78,7 +78,7 @@ addNewRef = (user) => {
           data = {
             kid: _id,
             config: reward,
-            referrals: [ user._id ]
+            referrals: [ user.kid._id ]
           }
 
           return referralModel.create(data)
