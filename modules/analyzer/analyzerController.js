@@ -287,7 +287,6 @@ getAnalyzed1 = (start_time, end_time) => {
 
       return Promise.all(promises)
         .then(() => invitors.filter(invitor => (invitor.referrals.length > 0)))
-        .catch(err => console.log(err))
     })
 }
 
