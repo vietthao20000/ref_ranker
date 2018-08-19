@@ -54,11 +54,12 @@ addNewRef = (user) => {
             reward = { 
               created_time: Date.now(), 
               config: [{
-                count: 1,
-                reward: -1
+                count: 0,
+                reward: 0
               }] 
             };
-            return rewardConfigModel.create(reward)
+            
+            return reward;
           }
 
           return reward[0]

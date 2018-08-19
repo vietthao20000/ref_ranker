@@ -12,7 +12,10 @@ Router.get('/getAnalyzed', (req, res) => {
   analyzerController
     .getAnalyzed(start_time, end_time)
     .then(doc => res.success({ data: doc }))
-    .catch(err => console.log(err))
+    .catch(err => {
+      console.log(err)
+      res.fail({ message: 'Get analyzed fail', data: err })
+    })
 })
 
 Router.get('/getAnalyzed1', (req, res) => {
@@ -25,13 +28,19 @@ Router.get('/getAnalyzed1', (req, res) => {
   analyzerController
     .getAnalyzed1(start_time, end_time)
     .then(doc => res.success({ data: doc }))
-    .catch(err => console.log(err))
+    .catch(err => {
+      console.log(err);
+      res.fail({ message: 'Get analyzed1 fail', data: err })
+    })
 })
 
 Router.get('/update', (req, res) => {
   analyzerController.update()
     .then(() => { res.send("done") })
-    .catch(err => console.log(err))
+    .catch(err => {
+      console.log(err);
+      res.fail({ message: 'Update fail', data: err })
+    })
 })
 
 module.exports = Router

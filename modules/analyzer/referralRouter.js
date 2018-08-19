@@ -13,6 +13,10 @@ Router.patch('/', (req, res) => {
 
     return referralModel.update({'config.config._id': req.body.data._id}, {'$set': updates})
       .then(resp => res.success({ data: resp }))
+      .catch(err => {
+        console.log(err);
+        res.fail({ message: 'Update referral check & notes fail', data: err })
+      })
   }
 
   res.fail({ message: 'Not enough data' });
