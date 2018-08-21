@@ -250,6 +250,7 @@ getAnalyzed1 = (start_time, end_time) => {
 
       invitors.map(invitor => {
         invitor.referrals = invitor.referrals.filter(ref => {
+          if (!ref.registrations || ref.registrations.length) return false;
           let time = new Date(JSON.parse(JSON.stringify(ref.registrations[0])).time)
           return (time >= start_time && time <= end_time)
         })
