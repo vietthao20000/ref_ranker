@@ -25,28 +25,30 @@ Router.post('/webhook', (req, res) => {
   .then(invitor => {
     if (!invitor) return;
 
-    let ref_count = invitor.referrals.length
+    let ref_count = invitor.referrals.length;
 
-    current_reward = mailerController.get_reward_info(ref_count)
-    next_reward = mailerController.get_reward_info(current_reward.next).reward
+    return mailerController.get_reward_info(ref_count, invitor._id).then(reward => {
+      if (!reward) return;
+      let { current_reward, next_reward } = reward;
 
-    template_name = current_reward.reward ? '/template2.html' : '/template1.html'
-    title = current_reward.reward ? 'BẠN CÓ QUÀ TỪ TECHKIDS !!' : 'Lời cảm ơn đến từ Techkids Coding School'
-    mailerController.send_email({ 
-      // to: invitor.mail, 
-      to: 'vietthao2000@gmail.com',
-      subject: title, 
-      html_content: generateEmail({
-        name: invited.kid.name.first+" "+invited.kid.name.last,
-        count: ref_count,
-        reward: current_reward.reward,
-        next_reward,
-        next_count: current_reward.next,
-        template_path: __dirname + template_name
-      }) 
+      template_name = current_reward.reward ? '/template2.html' : '/template1.html'
+      title = current_reward.reward ? 'BẠN CÓ QUÀ TỪ TECHKIDS !!' : 'Lời cảm ơn đến từ Techkids Coding School'
+
+      return mailerController.send_email({ 
+        // to: invitor.mail, 
+        to: 'vietthao2000@gmail.com',
+        subject: title, 
+        html_content: generateEmail({
+          name: invited.kid.name.first+" "+invited.kid.name.last,
+          count: ref_count,
+          reward: current_reward.reward,
+          next_reward: next_reward.reward,
+          next_count: next_reward.count,
+          template_path: __dirname + template_name
+        }) 
+      })
     })
-
-    res.success({ data: ref_count })
+    .then(res.success({ data: ref_count }))
   })
   .catch(err => console.log(err))
 })
