@@ -39,7 +39,7 @@
                     <tr>
                       <th class="reward-table-row">Goal</th>
                       <td v-for="goal, index in config.config" v-if="goal.reward" class="reward-table-row">
-                        <input type="number" v-model="goal.count" class="form-control" step="1" @change="changedConfig(`.config-${config_index}`, false);">
+                        <input type="number" v-model.number="goal.count" class="form-control" step="1" @change="changedConfig(`.config-${config_index}`, false);">
                       </td>
                     </tr>
                   </thead>
@@ -47,7 +47,7 @@
                     <tr>
                       <th class="reward-table-row">Reward</th>
                       <td v-for="goal, index in config.config" v-if="goal.reward" class="reward-table-row">
-                        <input type="number" v-model="goal.reward" class="form-control" step="5000" @change="changedConfig(`.config-${config_index}`, false);">
+                        <input type="number" v-model.number="goal.reward" class="form-control" step="5000" @change="changedConfig(`.config-${config_index}`, false);">
                       </td>
                     </tr>
                   </tbody>
