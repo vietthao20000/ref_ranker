@@ -10,16 +10,6 @@ config = {
   }
 }
 
-transporter = nodemailer.createTransport(config)
-
-transporter.verify(function(error, success) {
-  if (error) {
-    console.log(error);
-  } else {
-    console.log('Server is ready to take our messages');
-  }
-});
-
 send_email = ({ to, subject, html_content }) => {
   return new Promise((resolve, reject) => {
     message = {
@@ -29,12 +19,24 @@ send_email = ({ to, subject, html_content }) => {
       html: html_content
     };
 
-    transporter.sendMail(message, (error, info) => {
+    transporter = nodemailer.createTransport(config)
+
+    transporter.verify(function(error, success) {
       if (error) {
-          reject(error)
+        console.log(error);
+        reject(error)
       }
 
-      resolve({id: info.messageId});
+      console.log('Logged in, preparing to send message');
+      transporter.sendMail(message, (error, info) => {
+        if (error) {
+          console.log(error)
+          reject(error)
+        }
+
+        console.log({info})
+        resolve({id: info.messageId});
+      });
     });
   })
 }

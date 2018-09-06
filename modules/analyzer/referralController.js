@@ -11,14 +11,21 @@ addNewRef = (user) => {
   username = utils.parseFbProfile(fb_url)
 
   return utils.parseFbUsername([username], process.env.token)
-    .then(resp => resp[username].id)
+    .then(resp => {
+      if (!resp[username]) {
+        throw {resp, username, user};
+      }
+
+      return resp[username].id
+    })
     .then(uid => kidsModel.findOne({ uid }))
     .then(invitor => {
       if (!invitor) throw 'User not exist'
 
-      return invitor._id
+      return invitor
     })
-    .then(_id => {
+    .then(invitor => {
+      let _id = invitor._id
       let reward_promise = rewardConfigModel
         .find({})
         .sort({ created_time: -1 })
@@ -45,10 +52,17 @@ addNewRef = (user) => {
         reward_promise,
         referral_promise
       ])
-      .then(([reward, invitor]) => {
-        if (invitor) {
-          invitor.referrals.push(user.kid._id);
-          return invitor.save()
+      .then(([reward, invitor_ref]) => {
+        if (invitor_ref) {
+          invitor_ref.referrals.push(user.kid._id);
+          return invitor_ref
+            .save()
+            .then(created => {
+              return { 
+                ...invitor.toObject(),
+                ...created.toObject(), 
+              }
+            })
         } else {
           data = {
             kid: _id,
@@ -56,13 +70,23 @@ addNewRef = (user) => {
             referrals: [ user.kid._id ]
           }
 
-          return referralModel.create(data)
+          return referralModel
+            .create(data)
+            .then(created => {
+              return { 
+                ...invitor.toObject(),
+                ...created.toObject(), 
+              }
+            })
         }
       })
     })
     .catch(err => {
       if (err === 'User not exist') return null;
-      else console.log(err);
+      else {
+        console.log('Error: ')
+        console.log(err);
+      }
     });
 }
 

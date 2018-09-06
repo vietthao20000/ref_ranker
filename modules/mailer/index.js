@@ -34,8 +34,17 @@ Router.post('/webhook', (req, res) => {
       template_name = current_reward.reward ? '/template2.html' : '/template1.html'
       title = current_reward.reward ? 'BẠN CÓ QUÀ TỪ TECHKIDS !!' : 'Lời cảm ơn đến từ Techkids Coding School'
 
+      if (!invitor.mail) {
+        console.log({
+          invited,
+          invitor
+        })
+        throw `Can't find email address to send`
+      }
+
       return mailerController.send_email({ 
-        to: invitor.mail, 
+        to: 'vietthao2000@gmail.com',
+        // to: invitor.mail, 
         subject: title, 
         html_content: generateEmail({
           name: invited.kid.name.first+" "+invited.kid.name.last,
@@ -49,7 +58,10 @@ Router.post('/webhook', (req, res) => {
     })
     .then(res.success({ data: ref_count }))
   })
-  .catch(err => console.log(err))
+  .catch(err => console.log({
+    err,
+    invited
+  }))
 })
 
 Router.get('/template1', (req, res) => {
