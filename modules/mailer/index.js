@@ -43,8 +43,7 @@ Router.post('/webhook', (req, res) => {
       }
 
       return mailerController.send_email({ 
-        to: 'vietthao2000@gmail.com',
-        // to: invitor.mail, 
+        to: invitor.mail, 
         subject: title, 
         html_content: generateEmail({
           name: invited.kid.name.first+" "+invited.kid.name.last,
