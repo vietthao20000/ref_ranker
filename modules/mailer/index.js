@@ -46,7 +46,7 @@ Router.post('/webhook', (req, res) => {
         to: invitor.mail, 
         subject: title, 
         html_content: generateEmail({
-          name: invited.kid.name.first+" "+invited.kid.name.last,
+          name: invited.kid.name.last+" "+invited.kid.name.first,
           count: ref_count,
           reward: current_reward.reward,
           next_reward: next_reward.reward,
